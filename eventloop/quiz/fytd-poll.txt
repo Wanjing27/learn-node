@@ -1,1 +1,13 @@
 - In eventloop/poll.js, what will be the order of execution? Briefly explain the order of execution w.r.t the event loop phases.
+
+output:
+foo
+done
+Read Error
+
+The code begins by calling someAsyncOperation(), initiating an asynchronous file read operation using fs.readFile(). Subsequently, foo() is invoked, logging "foo" to the console. Concurrently, "done" is logged to the console. During the Poll phase of the event loop, the file system operation initiated by fs.readFile() is handled. Once completed, its corresponding callback is placed in the Callback Queue. As the Call Stack empties, the Event Loop retrieves the callback from the Callback Queue and executes it, logging either an error message or the data read from the file, depending on the outcome of the file reading operation.
+
+
+
+
+
