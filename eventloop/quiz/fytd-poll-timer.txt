@@ -1,3 +1,12 @@
 - Explain the order of execution in terms of the event loop for eventloop/poll_timer.js.
+
+In `eventloop/poll_timer.js`, the execution flow is orchestrated by the event loop, which manages asynchronous tasks and scheduled timers. Initially, a timeout callback is set to trigger after 100 milliseconds using `setTimeout()`, while simultaneously, an asynchronous file read operation is initiated with `fs.readFile()` within the function `someAsyncOperation()`. The event loop enters the Poll phase to handle I/O events while awaiting the completion of the file operation. Upon completion, the callback associated with the file operation is enqueued into the Callback Queue. Subsequently, the event loop executes this callback, logging "someAsyncOperation" to the console and introducing a delay via a while loop. Concurrently, the event loop continues monitoring the scheduled timeout. When the timeout duration elapses, its callback is enqueued into the Callback Queue and executed, calculating and logging the duration since scheduling. Ultimately, with all tasks completed, the program concludes its execution, showcasing the event loop's efficiency in managing asynchronous operations and timers while maintaining non-blocking behavior.
+
 - Will the order of execution change if the delay in the while loop is changed from 10s to 150s? Why or why not?
+
+Yes, the order of execution will change. Increasing the delay in the while loop to 150 milliseconds will extend the time it takes to complete the someAsyncOperation callback. Consequently, the timeout callback scheduled by setTimeout will execute later, after the completion of the extended delay in the while loop.
+
+
 - Will the order of execution change if timeout is changed to 0? Why or why not?
+
+No, the order of execution will not change significantly. Setting the timeout to 0 milliseconds means the callback will be executed as soon as possible after the current synchronous code execution completes. However, it doesn't affect the asynchronous file operation or the delay introduced in the someAsyncOperation callback. The overall sequence of events will remain similar, with the timeout callback possibly executing slightly earlier but still after the completion of the file read operation and the delay in the someAsyncOperation callback.
